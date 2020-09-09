@@ -1,6 +1,9 @@
 {
+    "app_id": "dream-max-ooong",
     "config_version": 20200603,
-    "deployment_model": "GLOBAL",
+    "name": "DREAM-Max",
+    "location": "IE",
+    "deployment_model": "LOCAL",
     "security": {},
     "custom_user_data_config": {
         "enabled": false
