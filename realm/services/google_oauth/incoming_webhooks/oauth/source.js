@@ -13,7 +13,7 @@ exports = async function (payload, response) {
   const CLIENT_SECRET = context.values.get("GOOGLE_CLIENT_SECRET");
 
   // TODO: Can probably generate the following programmatically:
-  const OAUTH2_CALLBACK = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/dream-scratch-ermjp/service/google_oauth/incoming_webhook/oauth";
+  const OAUTH2_CALLBACK = context.request.webhookUrl;
 
   // This shouldn't change:
   // https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#httprest
