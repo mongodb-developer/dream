@@ -1,4 +1,4 @@
-// This function is the webhook's request handler.
+
 exports = async function (payload, response) {
   const https = require('https');
   const querystring = require('querystring');
@@ -6,7 +6,7 @@ exports = async function (payload, response) {
 
   // MongoDBofficial Channel ID:
   // (Obtained from: https://developers.google.com/youtube/v3/docs/channels/list?apix=true&apix_params=%7B%22part%22%3A%5B%22id%22%5D%2C%22forUsername%22%3A%22MongoDB%22%7D)
-  const ACCOUNT_ID = context.values.get("GOOGLE_ACCOUNT_ID");
+  const ACCOUNT_ID = context.values.get("GOOGLE_ACCOUNT_ID"); //"UCK_m2976Yvbx-TyDLw7n1WA";
 
   // Following obtained from: https://console.developers.google.com/apis/credentials
   const CLIENT_ID = context.values.get("GOOGLE_CLIENT_ID");
@@ -58,70 +58,38 @@ exports = async function (payload, response) {
     } else {
       // We have a code, so we've redirected successfully from Google's consent page.
       // Let's post to Google, requesting an access:
-
-      const poster = new Promise((resolve, reject) => {
-        const bodyObject = {
+      let res = await context.http.post({
+        url: GOOGLE_TOKEN_ENDPOINT,
+        body: {
           client_id: CLIENT_ID,
           client_secret: CLIENT_SECRET,
           code: oauthCode,
           grant_type: 'authorization_code',
           redirect_uri: OAUTH2_CALLBACK,
-        };
-
-        const req = https.request(
-          GOOGLE_TOKEN_ENDPOINT,
-          {
-            method: 'POST',
-          },
-          (res) => {
-            let rawData = '';
-            res.on('data', (chunk) => { rawData += chunk; });
-            res.on('end', () => {
-              try {
-                const parsedData = JSON.parse(rawData);
-                resolve(parsedData);
-              } catch (e) {
-                reject(e.message);
-              }
-            });
-          }
-        );
-        req.on('error', () => {
-          reject(e);
-        });
-        req.write(JSON.stringify(bodyObject));
-        req.end();
+        },
+        encodeBodyAsJSON: true,
       });
+      let tokens = JSON.parse(res.body.text());
+      tokens._id = "youtube";
 
-      let tokens = await poster;
+      const doc = await context.services.get("mongodb-atlas").db("auth").collection("auth_tokens").findOneAndReplace(
+        {
+          _id: "youtube"
+        },
+        tokens,
+        {
+          upsert: true,
+        },
+      );
 
-      // Just for giggles, let's use the token to make a request:
-      const requester = new Promise((resolve, reject) => {
-        const req = https.get(
-          'https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&forUsername=MongoDB&prettyPrint=true',
-          {
-            headers: {
-              'Authorization': `Bearer ${tokens.access_token}`,
-              'Accept': 'application/json'
-            }
-          },
-          (res) => {
-            let rawData = '';
-            res.on('data', (chunk) => { rawData += chunk; });
-            res.on('end', () => {
-              resolve(rawData);
-            });
-          });
-        req.on('error', () => {
-          reject(e);
-        });
-      });
-      const data = await requester;
-      response.setHeader('Content-Type', 'text/plain');
-      response.setBody(data);
+      return {
+        "message": "ok",
+      }
     }
   }
 
   // Querying a mongodb service:
   // const doc = context.services.get("mongodb-atlas").db("dbname").collection("coll_name").findOne();
+
+
 };
