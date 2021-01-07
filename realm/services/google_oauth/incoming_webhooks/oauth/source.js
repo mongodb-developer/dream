@@ -124,6 +124,4 @@ exports = async function (payload, response) {
 
   // Querying a mongodb service:
   // const doc = context.services.get("mongodb-atlas").db("dbname").collection("coll_name").findOne();
-
-
 };
