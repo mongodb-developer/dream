@@ -66,6 +66,7 @@ exports = async function (payload, response) {
           code: oauthCode,
           grant_type: 'authorization_code',
           redirect_uri: OAUTH2_CALLBACK,
+          access_type: "offline",
         },
         encodeBodyAsJSON: true,
       });
