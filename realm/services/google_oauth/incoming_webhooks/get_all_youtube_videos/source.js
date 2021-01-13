@@ -26,7 +26,7 @@ exports = async function (payload, response) {
     // console.log(video.id);
     // console.log(video.snippet.title)
     video._id = video.contentDetails.videoId;
-    const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: {video}}, { "upsert": true });
+    const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: video}, { "upsert": true });
   });
   
   while(nextPageToken){
