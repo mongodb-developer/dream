@@ -7,7 +7,7 @@ exports = async function (year, month, day) {
 
   // If month is a single digit, ensure it begins with 0
   if (month < 10) {
-    month = '0' + day;
+    month = '0' + month;
   }
 
   let date = `${year}-${month}-${day}`;
