@@ -5,6 +5,11 @@ exports = async function (year, month, day) {
     day = '0' + day;
   }
 
+  // If month is a single digit, ensure it begins with 0
+  if (month < 10) {
+    month = '0' + day;
+  }
+
   let date = `${year}-${month}-${day}`;
   
   let videos = '';
