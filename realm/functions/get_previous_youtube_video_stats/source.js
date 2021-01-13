@@ -1,4 +1,4 @@
-exports = async function (year, month, firstDay, firstDay) {
+exports = async function (year, month, firstDay, lastDay) {
   // NOTE: We recommend gathering up to 15 days of stats to prevent timeouts
     
   for (let day = firstDay; day <= lastDay; day++) {
