@@ -1,4 +1,4 @@
-exports = async function (payload, response) {
+exports = async function () {
   // Get a token (it'll be refreshed if necessary):
   const accessToken = await context.functions.execute("get_token");
   
@@ -101,12 +101,12 @@ exports = async function (payload, response) {
           const doc =  context.services.get("mongodb-atlas").db("dream").collection("youtube_stats").updateOne({ "_id": `${videoId}_${year}_${month}` }, update, options);
         });
       }
-      response.setHeader('Content-Type', 'text/plain');
-      response.setBody(statsResults.body.text());
     }
     
     pageIncrement += numberOfDocsPerPage;
   }
+
+  return "Data imported";
 };
 
 
