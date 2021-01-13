@@ -1,0 +1,9 @@
+{
+    "name": "get_all_youtube_videos",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "0 05 * * *"
+    },
+    "function_name": "get_all_youtube_videos",
+    "disabled": false
+}
