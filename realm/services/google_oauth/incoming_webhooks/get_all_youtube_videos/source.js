@@ -48,8 +48,7 @@ exports = async function (payload, response) {
     
 
     ejson_body.items.forEach( function(video)  {
-      // console.log(video.id);
-      // console.log(video.snippet.title)
+      console.log(video);
       video._id = video.contentDetails.videoId;
       // probably want to upsert this
       const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: {video}}, { "upsert": true });
