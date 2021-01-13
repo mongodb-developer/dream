@@ -1,8 +1,8 @@
 exports = async function () {
 
   let date = new Date();
-  // Set the date to yesterday
-  date.setDate(date.getDate() - 1);
+  // Set the date to two days prior (yesterday's stats are not available)
+  date.setDate(date.getDate() - 2);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
