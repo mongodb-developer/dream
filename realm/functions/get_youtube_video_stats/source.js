@@ -84,7 +84,7 @@ exports = async function () {
               year,
               month
             },
-            "$push": {
+            "$addToSet": {
               "stats": {
                 "date": new Date(date),
                 "estimatedMinutesWatched": video[1],
