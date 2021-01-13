@@ -1,9 +1,7 @@
-exports = async function () {
+exports = async function (year, month, firstDay, firstDay) {
     
-  let year = 2020;
-  let month = 11;
-  for (let day = 1; day <= 15; day++) {
-    context.functions.execute("get_youtube_video_stats", year, month, day);
+  for (let day = firstDay; day <= firstDay; day++) {
+    await context.functions.execute("get_youtube_video_stats", year, month, day);
     console.log(`YouTube video stats imported for ${year}-${month}-${day}`);    
   }  
 
