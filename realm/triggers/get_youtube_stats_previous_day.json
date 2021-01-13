@@ -1,0 +1,9 @@
+{
+    "name": "get_youtube_stats_previous_day",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "0 */24 * * *"
+    },
+    "function_name": "get_youtube_video_stats",
+    "disabled": false
+}
