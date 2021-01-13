@@ -9,7 +9,7 @@ exports = async function (payload, response) {
   // Let's make an actual API request:
   let videoResults = await context.http.get({
     // hard coding the MongoDB uploads playlist ID
-    url: 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=UUK_m2976Yvbx-TyDLw7n1WA',
+    url: 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=UUK_m2976Yvbx-TyDLw7n1WA',
     headers: {
       'Authorization': [`Bearer ${accessToken}`],
       'Accept': ['application/json'],
@@ -26,6 +26,7 @@ exports = async function (payload, response) {
     // console.log(video.id);
     // console.log(video.snippet.title)
     video._id = video.contentDetails.videoId;
+    video.snippet.publishedAt = new Date(video.snippet.publishedAt)
     const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: video}, { "upsert": true });
   });
   
@@ -34,7 +35,7 @@ exports = async function (payload, response) {
     // Let's make an actual API request:
     let videoResults = await context.http.get({
       // hard coding the MongoDB uploads playlist ID
-      url: `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=UUK_m2976Yvbx-TyDLw7n1WA&pageToken=${nextPageToken}`,
+      url: `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=UUK_m2976Yvbx-TyDLw7n1WA&pageToken=${nextPageToken}`,
       headers: {
         'Authorization': [`Bearer ${accessToken}`],
         'Accept': ['application/json'],
@@ -48,10 +49,8 @@ exports = async function (payload, response) {
     
 
     ejson_body.items.forEach( function(video)  {
-      console.log(video);
       video._id = video.contentDetails.videoId;
-      
-      // probably want to upsert this
+      video.snippet.publishedAt = new Date(video.snippet.publishedAt)
       const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: video}, { "upsert": true });
     });
     response.setHeader('Content-Type', 'text/plain');
