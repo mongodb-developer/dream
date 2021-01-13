@@ -32,8 +32,8 @@ exports = async function (payload, response) {
     console.log(videos);
     console.log(docs.length);
     
-    let year = "2020";
-    let month = "11";
+    let year = 2020;
+    let month = 11;
     for (let day = 1; day <= 15; day++){
       
       // If day is a single digit, ensure it begins with 0
