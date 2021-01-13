@@ -1,4 +1,4 @@
-exports = async function (payload, response) {
+exports = async function () {
   // Get a token (it'll be refreshed if necessary):
   const accessToken = await context.functions.execute("get_token");
   
@@ -51,9 +51,9 @@ exports = async function (payload, response) {
       video.snippet.publishedAt = new Date(video.snippet.publishedAt)
       const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: video}, { "upsert": true });
     });
-    response.setHeader('Content-Type', 'text/plain');
-    response.setBody(videoResults.body.text());
   }
+
+  return "Data imported";
 
 };
 
