@@ -23,9 +23,7 @@ exports = async function (payload, response) {
   
 
   ejson_body.items.forEach( function(video)  {
-    // console.log(video.id);
-    // console.log(video.snippet.title)
-    video._id = video.contentDetails.videoId;
+    video._id = video.snippet.resourceId.videoId;
     video.snippet.publishedAt = new Date(video.snippet.publishedAt)
     const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: video}, { "upsert": true });
   });
@@ -49,7 +47,7 @@ exports = async function (payload, response) {
     
 
     ejson_body.items.forEach( function(video)  {
-      video._id = video.contentDetails.videoId;
+      video._id = video.snippet.resourceId.videoId;
       video.snippet.publishedAt = new Date(video.snippet.publishedAt)
       const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, {$set: video}, { "upsert": true });
     });
