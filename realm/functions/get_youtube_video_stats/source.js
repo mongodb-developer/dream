@@ -43,10 +43,14 @@ exports = async function (year, month, day) {
       },
     });
     
-    const ejson_body = EJSON.parse(statsResults.body.text());
-    
+    let ejson_body;
+    try {
+      ejson_body = EJSON.parse(statsResults.body.text());
+    } catch (error) {
+      throw new Error(`Error occurred while parsing the following: ${statsResults.body.text()}`);
+    }
     if (!ejson_body.rows) {
-      throw `No stats returned. ${ejson_body.error.code}: ${ejson_body.error.message}`;;
+      throw new Error(`No stats returned. ${ejson_body.error.code}: ${ejson_body.error.message}`);
     }
       
     ejson_body.rows.forEach( function(video)  {
@@ -77,7 +81,6 @@ exports = async function (year, month, day) {
       };
 
       const options = { "upsert": true };
-      
       context.services.get("mongodb-atlas").db("dream").collection("youtube_stats").updateOne({ "_id": `${videoId}_${year}_${month}` }, update, options);
     });
     
