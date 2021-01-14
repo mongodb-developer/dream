@@ -59,7 +59,7 @@ exports = async function (year, month, day) {
           "$set": {
             videoId,
             year,
-            month
+            parseInt(month)
           },
           "$addToSet": {
             "stats": {
