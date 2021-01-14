@@ -30,7 +30,7 @@ exports = async function () {
     nextPageToken = ejson_body.nextPageToken;
 
     if (!ejson_body.items) {
-      throw `No videos returned. ${videoResults.body.text()}`;
+      throw `No videos returned. ${ejson_body.error.code}: ${ejson_body.error.message}`;;
     }
     ejson_body.items.forEach( function(video)  {
       video._id = video.snippet.resourceId.videoId;
