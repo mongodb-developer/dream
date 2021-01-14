@@ -40,7 +40,7 @@ exports = async function (year, month, day) {
     const accessToken = await context.functions.execute("get_token");
     
     // hard coding the MongoDB uploads playlist ID
-    const url = `https://youtubeanalytics.googleapis.com/v2/reports?dimensions=video&endDate=${date}&ids=channel%3D%3DMINE&metrics=estimatedMinutesWatched%2Cviews%2Clikes%2CsubscribersGained&sort=-views&startDate=${date}&filters=video==${videos}`;
+    const url = `https://youtubeanalytics.googleapis.com/v2/reports?dimensions=video&endDate=${date}&ids=channel%3D%3DMINE&metrics=views%2Clikes%2Cdislikes%2Cshares%2Ccomments%2CestimatedMinutesWatched%2CaverageViewDuration%2CaverageViewPercentage%2CsubscribersGained%2CsubscribersLost%2CvideosAddedToPlaylists%2CvideosRemovedFromPlaylists&sort=-views&startDate=${date}&filters=video==${videos}`;
     
     let statsResults = await context.http.get({
       url: url,
@@ -64,10 +64,18 @@ exports = async function (year, month, day) {
           "$addToSet": {
             "stats": {
               "date": new Date(date),
-              "estimatedMinutesWatched": video[1],
-              "views": video[2],
-              "likes": video[3],
-              "subscribersGained": video[4]
+              "views": video[1],
+              "likes": video[2],
+              "dislikes": video[3],
+              "shares": video[4],
+              "comments": video[5],
+              "estimatedMinutesWatched": video[6],
+              "averageViewDuration": video[7],
+              "averageViewPercentage": video[8],
+              "subscribersGained": video[9],
+              "subscribersLost": video[10],
+              "videosAddedToPlaylists": video[11],
+              "videosRemovedFromPlaylists": video[12]
             }
           }
         };
