@@ -30,18 +30,12 @@ exports = async function () {
     nextPageToken = ejson_body.nextPageToken;
 
     if (!ejson_body.items) {
-      throw "No videos returned";
+      throw `No videos returned. ${videoResults.body.text()}`;
     }
     ejson_body.items.forEach( function(video)  {
       video._id = video.snippet.resourceId.videoId;
       video.snippet.publishedAt = new Date(video.snippet.publishedAt)
-      const doc = context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, { $set: video }, { "upsert": true });
-      console.log(doc);
+      context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, { $set: video }, { "upsert": true });
     });
   }
-
-  return "Data imported";
-
 };
-
-
