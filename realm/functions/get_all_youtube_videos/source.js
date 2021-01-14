@@ -17,7 +17,7 @@ exports = async function () {
     }
     
     let videoResults = await context.http.get({
-      // hard coding the MongoDB uploads playlist ID for now
+      // Hard coding the MongoDB uploads playlist ID for now
       // This id can be generated using the YouTube API when we want to make this generic
       url: `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=UUK_m2976Yvbx-TyDLw7n1WA${nextPageTokenParam}`,
       headers: {

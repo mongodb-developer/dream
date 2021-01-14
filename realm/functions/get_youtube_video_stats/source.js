@@ -33,6 +33,7 @@ exports = async function (year, month, day) {
     // Get a token (it'll be refreshed if necessary):
     const accessToken = await context.functions.execute("get_token");
     
+    // See https://developers.google.com/youtube/analytics/reference/reports/query for details on this call
     const url = `https://youtubeanalytics.googleapis.com/v2/reports?dimensions=video&endDate=${date}&ids=channel%3D%3DMINE&metrics=views%2Clikes%2Cdislikes%2Cshares%2Ccomments%2CestimatedMinutesWatched%2CaverageViewDuration%2CaverageViewPercentage%2CsubscribersGained%2CsubscribersLost%2CvideosAddedToPlaylists%2CvideosRemovedFromPlaylists&sort=-views&startDate=${date}&filters=video==${videos}`;
     
     let statsResults = await context.http.get({
