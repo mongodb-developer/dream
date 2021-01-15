@@ -10,7 +10,10 @@ exports = async function () {
   
   try {
     await context.functions.execute("get_youtube_video_stats", year, month, day);
-    return `YouTube video stats imported for ${year}-${month}-${day}`;
+    return {
+      date: `${year}-${month}-${day}`,
+      message: `YouTube video stats imported for ${year}-${month}-${day}`
+    };
   } catch (error) {
     throw new Error(`Unable to import stats for ${year}-${month}-${day}: ${error}`);
   }

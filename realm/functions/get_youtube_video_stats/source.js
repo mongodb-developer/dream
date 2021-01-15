@@ -1,5 +1,9 @@
 exports = async function (year, month, day) {
 
+  const database = "dream";
+  const statsCollection = "youtube_stats";
+  const videosCollection = "youtube_videos";
+
   // If day is a single digit, ensure it begins with 0
   if (day < 10) {
     day = '0' + day;
@@ -12,7 +16,7 @@ exports = async function (year, month, day) {
 
   let date = `${year}-${month}-${day}`;
   
-  const allYouTubeVideos = await context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").find({}).toArray();
+  const allYouTubeVideos = await context.services.get("mongodb-atlas").db(database).collection(videosCollection).find({}).toArray();
   const totalNumberOfYouTubeVideos = allYouTubeVideos.length;
   
   // We will paginate the videos in groups of 500
@@ -34,6 +38,8 @@ exports = async function (year, month, day) {
     const accessToken = await context.functions.execute("get_token");
     
     // See https://developers.google.com/youtube/analytics/reference/reports/query for details on this call
+    // NOTE:  If you edit the metrics in this url, be sure to update the stats that are pulled from the results 
+    // of this call. Order matters to the results.
     const url = `https://youtubeanalytics.googleapis.com/v2/reports?dimensions=video&endDate=${date}&ids=channel%3D%3DMINE&metrics=views%2Clikes%2Cdislikes%2Cshares%2Ccomments%2CestimatedMinutesWatched%2CaverageViewDuration%2CaverageViewPercentage%2CsubscribersGained%2CsubscribersLost%2CvideosAddedToPlaylists%2CvideosRemovedFromPlaylists&sort=-views&startDate=${date}&filters=video==${videos}`;
     
     let statsResults = await context.http.get({
@@ -82,7 +88,7 @@ exports = async function (year, month, day) {
       };
 
       const options = { "upsert": true };
-      context.services.get("mongodb-atlas").db("dream").collection("youtube_stats").updateOne({ "_id": `${videoId}_${year}_${month}` }, update, options);
+      context.services.get("mongodb-atlas").db(database).collection(statsCollection).updateOne({ "_id": `${videoId}_${year}_${month}` }, update, options);
     });
     
     pageIncrement += numberOfDocsPerPage;

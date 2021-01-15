@@ -10,7 +10,11 @@ exports = async function (year, month, firstDay, lastDay) {
     }   
   }  
 
-  return `Finished importing stats for the ${month} ${firstDay}-${lastDay}, ${year}`;
+  return {
+    startDate: `${year}-${month}-${firstDay}`,
+    endDate: `${year}-${month}-${lastDay}`,
+    message: `YouTube video stats imported for the date range ${year}-${month}-${firstDay} - ${year}-${month}-${lastDay}`
+  }
 };
 
 
