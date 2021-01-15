@@ -15,17 +15,13 @@ exports = async function (payload, response) {
   const GOOGLE_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
 
   const SCOPES = [
-    "https://www.googleapis.com/auth/youtube",
+    //"https://www.googleapis.com/auth/youtube",
     "https://www.googleapis.com/auth/youtube.readonly",
-    "https://www.googleapis.com/auth/youtubepartner",
+    //"https://www.googleapis.com/auth/youtubepartner",
     "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
     "https://www.googleapis.com/auth/yt-analytics.readonly",
-    "https://www.googleapis.com/auth/youtube",
     "https://www.googleapis.com/auth/youtube.force-ssl",
     "https://www.googleapis.com/auth/youtube.readonly",
-    "https://www.googleapis.com/auth/youtubepartner",
-    "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
-    "https://www.googleapis.com/auth/yt-analytics.readonly"
   ];
 
 
