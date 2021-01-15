@@ -19,7 +19,6 @@ MDB_URL = environ["MDB_URL"]
 
 client = MongoClient(MDB_URL)
 db = client.get_default_database()
-youtube_stats = db.youtube_stats
 youtube_videos = db.youtube_videos
 
 # The following IDs were copy-pasted from Joe D's Google Sheet from the December DA tab.
