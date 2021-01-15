@@ -3,14 +3,12 @@ exports = async function () {
 
   const CLIENT_ID = context.values.get("GOOGLE_CLIENT_ID");
   if (typeof CLIENT_ID === "undefined") {
-    console.error("GOOGLE_CLIENT_ID app value is missing.");
-    return null;
+    throw new Error("GOOGLE_CLIENT_ID app value is missing.")
   }
 
   const CLIENT_SECRET = context.values.get("GOOGLE_CLIENT_SECRET");
   if (typeof CLIENT_SECRET === "undefined") {
-    console.error("GOOGLE_CLIENT_SECRET app value is missing.");
-    return null;
+    throw new Error("GOOGLE_CLIENT_SECRET app value is missing.");
   }
 
   const tokens_collection = context.services.get("mongodb-atlas").db("auth").collection("auth_tokens");
@@ -36,7 +34,7 @@ exports = async function () {
       tokens = JSON.parse(res.body.text());
 
       if (typeof tokens.access_token === "undefined") {
-        throw JSON.stringify(tokens);
+        throw new Error(JSON.stringify(tokens));
       }
 
       // TODO: Need to handle error responses here!
@@ -60,8 +58,7 @@ exports = async function () {
       );
     }
   } catch (err) {
-    console.error(err);
-    return null;
+    throw err;
   }
 
   return tokens.access_token
