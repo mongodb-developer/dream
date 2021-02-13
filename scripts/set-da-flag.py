@@ -24,7 +24,6 @@ youtube_videos = db.youtube_videos
 # The following IDs were copy-pasted from Joe D's Google Sheet from the December DA tab.
 # One day, maybe this script will read them in from stdin, but for the moment, this should be fine.
 IDS = """jX2IhYLa-PY
-vVcb6Q6U5YY
 L7HgsaObl3o
 MdodfBSJ8Xk
 79keZWM1F8g
@@ -130,7 +129,73 @@ rPqRyYJmx2g
 W4cnTUM7uEM
 gfg2wbh5_xI
 wvgWKUQjiXg
-aBUfQtuydTM""".splitlines()
+aBUfQtuydTM
+n6Rzy6hYplU
+jX2IhYLa-PY
+jRf3r3EQlfU
+L7HgsaObl3o
+BlV9El_MJqk
+79keZWM1F8g
+MdodfBSJ8Xk
+_VfGoJjQ0kU
+11phu1pEJm4
+-sRcpGpd-0s
+SFezkmAbwos
+IpwQTN5FQ_0
+zya_JdZb6HQ
+TZXPb3rsD9s
+Xn80t7G1-n4
+yS1ZIMOEAWw
+XbQvusGQbCk
+BAjUOCRj03g
+aAupumVpqcE
+B2k4BgX3nAg
+iftOOhVyskA
+omn21fJvCvg
+O8yATJdedXk
+V8htiss5B_Y
+siyFEUf0b4k
+fwFiTpOJ9Ac
+BY4Zl4XAZWc
+FzNPCuJhids
+LMyg3gwr6nY
+9belLFkKQRM
+HYyn3Dsn35s
+ZW4FOGF5ENA
+tjfi41puUjk
+odBEB52eoHY
+PqwA4HQ2mRw
+PTxJ46WoHgQ
+1JlNlVqYrCw
+-6Vrs-4X-g4
+FzU7rT4yr6M
+tpz-6Trd1UI
+ymYEmxnP6qE
+4E9PkCNB--c
+_d8CBOtadRA
+4QUGWnz-XaA
+nVh_uNOCiGM
+leNNivaQbDY
+SIiVjgEDI7M
+2XVZKM-zXTE
+QSYG3aTcHOc
+c6laPjLt9d8
+eDMXvuxDbII
+JvkJSEnPCkE
+MPPwn1XmhzQ
+x6JgmvsORkA
+BfLZUGjwyAs
+AypqNtp48WQ
+T0Ak0j8MCag
+X7TFfAN2QI4
+Uk72uizQ6SM
+RjPtKmlQcAY
+sWUygtuyJeQ
+0Rpu-7vxcdo
+NiKPxN5IECY
+9ZVbusKBUEU
+Ej05tq1220A
+A2BuoNF3nX0""".splitlines()
 
 result = youtube_videos.update_many({}, {
     '$set': {
