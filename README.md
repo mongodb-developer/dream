@@ -35,7 +35,7 @@ To move data from Dev to Staging:
 The steps to configure authentication on first deployment are a little fiddly.
 They are as follows:
 
-* `realm-cli import --project-id YOUR-PROJECT-ID
+* `realm-cli import --project-id YOUR-PROJECT-ID`
     * This will fail. That's expected!
     * Go to the GCP Credentials dashboard https://console.cloud.google.com/apis/credentials
         * Create a new OAuth client ID; Web application. Add the URL for the 'google_oauth > oauth' webhook as an Authorized Redirect URL
