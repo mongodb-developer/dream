@@ -16,9 +16,10 @@ exports = async function () {
       nextPageTokenParam = `&pageToken=${nextPageToken}`;
     }
     
-    let videoResults = await context.http.get({
+    const videoResults = await context.http.get({
       // Hard coding the MongoDB uploads playlist ID for now
       // This id can be generated using the YouTube API when we want to make this generic
+      // See https://developers.google.com/youtube/v3/docs/playlistItems/list for API documentation
       url: `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=UUK_m2976Yvbx-TyDLw7n1WA${nextPageTokenParam}`,
       headers: {
         'Authorization': [`Bearer ${accessToken}`],
@@ -26,15 +27,93 @@ exports = async function () {
       },
     });
     
-    const ejson_body = EJSON.parse(videoResults.body.text());    
-    nextPageToken = ejson_body.nextPageToken;
+    const ejson_videoResults = EJSON.parse(videoResults.body.text());    
+    nextPageToken = ejson_videoResults.nextPageToken;
 
-    if (!ejson_body.items) {
-      throw new Error(`No videos returned. ${ejson_body.error.code}: ${ejson_body.error.message}`);
+    if (!ejson_videoResults.items) {
+      throw new Error(`No videos returned. ${ejson_videoResults.error.code}: ${ejson_videoResults.error.message}`);
     }
-    ejson_body.items.forEach( function(video)  {
-      video._id = video.snippet.resourceId.videoId;
-      video.snippet.publishedAt = new Date(video.snippet.publishedAt)
+    
+    // Create a list of all of the video ids from the results of the API call above
+    let idsList = "";
+    ejson_videoResults.items.forEach( function(video)  {
+      idsList += video.snippet.resourceId.videoId + "%2C"; // adding a URL encoded comma to the end of each ID
+    });
+    // Remove the final %2C (comma)
+    idsList = idsList.substring(0, idsList.length - 3);
+    
+    const videoDetailResults = await context.http.get({
+      // See https://developers.google.com/youtube/v3/docs/videos/list for API documentation
+      url: `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics%2CfileDetails%2CliveStreamingDetails%2Clocalizations%2Cplayer%2CprocessingDetails%2CrecordingDetails%2Cstatus%2Csuggestions%2CtopicDetails&id=${idsList}`,
+      headers: {
+        'Authorization': [`Bearer ${accessToken}`],
+        'Accept': ['application/json'],
+      },
+    });
+    
+    const ejson_videoDetailResults = EJSON.parse(videoDetailResults.body.text());    
+
+    if (!ejson_videoDetailResults.items) {
+      throw new Error(`No videos returned. ${ejson_videoDetailResults.error.code}: ${ejson_videoDetailResults.error.message}`);
+    }
+    
+    ejson_videoDetailResults.items.forEach( function(video)  {
+      // Clean the data
+      video._id = video.id;
+      
+      video.snippet.publishedAt = new Date(video.snippet.publishedAt);
+      
+      video.statistics.viewCount = parseInt (video.statistics.viewCount);
+      video.statistics.likeCount = parseInt (video.statistics.likeCount);
+      video.statistics.dislikeCount = parseInt (video.statistics.dislikeCount);
+      video.statistics.favoriteCount = parseInt (video.statistics.favoriteCount);
+      video.statistics.commentCount = parseInt (video.statistics.commentCount);
+        
+      if (video.liveStreamingDetails?.actualStartTime) {
+        video.liveStreamingDetails.actualStartTime = new Date(video.liveStreamingDetails.actualStartTime);
+      }
+      if (video.liveStreamingDetails?.actualEndTime) {
+        video.liveStreamingDetails.actualEndTime = new Date(video.liveStreamingDetails.actualEndTime);
+      }
+      if (video.liveStreamingDetails?.scheduledStartTime) {
+        video.liveStreamingDetails.scheduledStartTime = new Date(video.liveStreamingDetails.scheduledStartTime);
+      }
+      if (video.liveStreamingDetails?.scheduledEndTime) {
+        video.liveStreamingDetails.scheduledEndTime = new Date(video.liveStreamingDetails.scheduledEndTime);
+      }
+      
+      if (video.recordingDetails?.recordingDate) {
+        video.recordingDetails.recordingDate = new Date(video.recordingDetails.recordingDate);
+      }
+      
+      // Can Charts handle the format of the duration? I'm guessing not so I'm converting it here
+      // This assumes videos are less than one day in length. I'm hard coding this the dumb way 
+      // and there is probably a more elegant solution
+      let durationInS;
+      // Special case for future live streams
+      if (video.contentDetails.duration === "P0D") {
+        durationInS = 0;
+      } else {
+        const regExp = /PT(([0-9]*)H)?(([0-9]*)M)?(([0-9]*)S)?/;
+        const tokens = regExp.exec(video.contentDetails.duration);
+        
+        if (!tokens) {
+          throw new Error(`Unable to parse duration for video ${video.id} with duration ${video.contentDetails.duration}`);
+        }
+        
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
+        
+        if(tokens[6])	seconds = parseInt(tokens[6]);
+        if(tokens[4]) minutes = parseInt(tokens[4]);
+        if(tokens[2]) hours = parseInt(tokens[2]);
+        
+        durationInS = seconds + (minutes * 60 ) + (hours * 60 * 60);
+      }
+      video.contentDetails.durationInS = durationInS;
+    
+      // Upsert the data
       context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, { $set: video }, { "upsert": true });
     });
   }
