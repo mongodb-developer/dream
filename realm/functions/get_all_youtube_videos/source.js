@@ -31,7 +31,9 @@ exports = async function () {
     nextPageToken = ejson_videoResults.nextPageToken;
 
     if (!ejson_videoResults.items) {
-      throw new Error(`No videos returned. ${ejson_videoResults.error.code}: ${ejson_videoResults.error.message}`);
+      const errorMessage = `No videos returned from the YouTube playlistItems API. ${ejson_videoResults.error.code}: ${ejson_videoResults.error.message}`;
+      context.functions.execute("send_status_to_slack", true, `An error occurred while running \`get_all_youtube_videos\`. \n${errorMessage}`);
+      throw new Error(errorMessage);
     }
     
     // Create a list of all of the video ids from the results of the API call above
@@ -54,7 +56,9 @@ exports = async function () {
     const ejson_videoDetailResults = EJSON.parse(videoDetailResults.body.text());    
 
     if (!ejson_videoDetailResults.items) {
-      throw new Error(`No videos returned. ${ejson_videoDetailResults.error.code}: ${ejson_videoDetailResults.error.message}`);
+      const errorMessage = `No videos returned from the YouTube videos API. ${ejson_videoDetailResults.error.code}: ${ejson_videoDetailResults.error.message}`;
+      context.functions.execute("send_status_to_slack", true, `An error occurred while running \`get_all_youtube_videos\`. \n${errorMessage}`);
+      throw new Error(errorMessage);
     }
     
     ejson_videoDetailResults.items.forEach( function(video)  {
@@ -98,7 +102,9 @@ exports = async function () {
         const tokens = regExp.exec(video.contentDetails.duration);
         
         if (!tokens) {
-          throw new Error(`Unable to parse duration for video ${video.id} with duration ${video.contentDetails.duration}`);
+          const errorMessage = `Unable to parse duration for video ${video.id} with duration ${video.contentDetails.duration}`;
+          context.functions.execute("send_status_to_slack", true, `An error occurred while running \`get_all_youtube_videos\`. \n${errorMessage}`);
+          throw new Error(errorMessage);
         }
         
         let seconds = 0;
@@ -117,4 +123,7 @@ exports = async function () {
       context.services.get("mongodb-atlas").db("dream").collection("youtube_videos").updateOne({ "_id": `${video._id}` }, { $set: video }, { "upsert": true });
     });
   }
+  
+  context.functions.execute("send_status_to_slack", false, `\`get_all_youtube_videos\` ran successfully`);
+  return true;
 };

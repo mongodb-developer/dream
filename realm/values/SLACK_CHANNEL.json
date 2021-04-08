@@ -1,0 +1,5 @@
+{
+    "name": "SLACK_CHANNEL_NOTIFICATIONS",
+    "value": "SLACK_CHANNEL_NOTIFICATIONS",
+    "from_secret": true
+}

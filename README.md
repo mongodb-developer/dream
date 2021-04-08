@@ -40,6 +40,10 @@ They are as follows:
     * Go to the GCP Credentials dashboard https://console.cloud.google.com/apis/credentials
         * Create a new OAuth client ID; Web application. Add the URL for the 'google_oauth > oauth' webhook as an Authorized Redirect URL
         * Add the credentials as Realm secrets: `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+    * Configure Slack notifications
+        * Create a new application in the [Slack API dashboard](https://api.slack.com/apps) and configure a new Incoming Webhook. The webhook should be connected to a channel where you want the Slack notifications to be posted.
+        * Copy the Webhook URL.
+        * In the Realm UI, create a new secret named `SLACK_CHANNEL_NOTIFICATIONS` that has the value of the Webhook URL you copied in the previous step.
 * `realm-cli import` - this should now succeed.
 * Now, in the browser, go to the URL for the `google_oauth > oauth` webhook.
     * Authorize the app to access the MongoDB account. You may have to click through some scary dialogs.
