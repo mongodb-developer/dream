@@ -1,0 +1,5 @@
+{
+    "name": "send_status_to_slack",
+    "private": true,
+    "run_as_system": true
+}
