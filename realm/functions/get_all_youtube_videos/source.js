@@ -8,7 +8,12 @@ exports = async function () {
   while(nextPageToken){
     
     // Get a token (it'll be refreshed if necessary):
-    const accessToken = await context.functions.execute("get_token");
+    try {
+      const accessToken = await context.functions.execute("get_token");
+    } catch (error){
+      context.functions.execute("send_status_to_slack", true, `An error occurred while running \`get_all_youtube_videos\`. \n${error}`);
+      throw new Error(error);
+    }
 
     // The first time we enter this while loop, we won't have a nextPageToken from YouTube
     let nextPageTokenParam = "";
