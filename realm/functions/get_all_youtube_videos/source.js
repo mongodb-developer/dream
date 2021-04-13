@@ -8,8 +8,9 @@ exports = async function () {
   while(nextPageToken){
     
     // Get a token (it'll be refreshed if necessary):
+    let accessToken;
     try {
-      const accessToken = await context.functions.execute("get_token");
+      accessToken = await context.functions.execute("get_token");
     } catch (error){
       context.functions.execute("send_status_to_slack", true, `An error occurred while running \`get_all_youtube_videos\`. \n${error}`);
       throw new Error(error);
