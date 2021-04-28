@@ -28,7 +28,7 @@ exports = async function (year, month, day) {
     // Generate a list of videos for this page
     let videos = "";
     for (i = pageIncrement; i < pageIncrement + numberOfDocsPerPage; i++){
-      if (i >= (totalNumberOfYouTubeVideos - 1) ) break;
+      if (i > (totalNumberOfYouTubeVideos - 1) ) break;
       videos += `${allYouTubeVideos[i]._id},`;
     }
     // Remove final trailing comma from the videos list
