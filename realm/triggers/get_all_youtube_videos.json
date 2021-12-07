@@ -4,6 +4,12 @@
     "config": {
         "schedule": "0 05 * * *"
     },
-    "function_name": "get_all_youtube_videos",
-    "disabled": false
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "get_all_youtube_videos"
+            }
+        }
+    }
 }

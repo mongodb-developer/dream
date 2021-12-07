@@ -4,6 +4,12 @@
     "config": {
         "schedule": "05 05 * * *"
     },
-    "function_name": "get_yesterday_youtube_video_stats",
-    "disabled": false
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "get_yesterday_youtube_video_stats"
+            }
+        }
+    }
 }
